@@ -1,0 +1,41 @@
+<!-- You must include this JavaScript file -->
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!-- You must include crowd-form so that your task submits answers to MTurk -->
+<crowd-form answer-format="flatten-objects">
+
+    <!-- The crowd-classifier element will create a tool for the Worker to select the
+           correct answer to your question -->
+    <crowd-classifier 
+      name="classification"
+      categories="[{% for category in categories %}'{{category}}',{% endfor %}]"
+      header="{{ question }}"
+    >
+
+      <classification-target>
+        <!-- The text you want classified will be substituted for the "text" variable when you 
+               publish a batch with a CSV input file containing multiple text items  -->
+        {{text|e}}
+      </classification-target>
+
+     <!-- Use the short-instructions section for quick instructions that the Worker
+            will see while working on the task. Including some basic examples of 
+            good and bad answers here can help get good results. You can include 
+            any HTML here. -->
+      <short-instructions>
+        {{ short_instructions }}
+      </short-instructions>
+
+      <!-- Use the full-instructions section for more detailed instructions that the 
+            Worker can open while working on the task. Including more detailed 
+            instructions and additional examples of good and bad answers here can
+            help get good results. You can include any HTML here. -->
+      <full-instructions header="Instructions">
+        {{ full_instructions }}
+      </full-instructions>
+
+    </crowd-classifier>
+</crowd-form> 
