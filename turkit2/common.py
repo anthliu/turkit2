@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List
 from jinja2 import Template
 
-from turkit2.primitive import Task
+from turkit2.base import Task
 
 class HumanIO(Task):
     def __init__(self,

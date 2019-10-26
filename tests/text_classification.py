@@ -1,12 +1,8 @@
-from jinja2 import Template
 import asyncio
 
 from context import turkit2
 from turkit2.common import TextClassification
 from utils import get_client
-
-with open('basic_form.html') as f:
-    schema = Template(f.read())
 
 client = get_client()
 
