@@ -80,7 +80,19 @@ class Task(object):
 
     def _parse(self, answer):
         resource = xmlschema.XMLResource(answer)
-        return self.answer_schema.to_dict(resource)
+        parsed = self.answer_schema.to_dict(resource)
+        assert 'Answer' in parsed
+        assert isinstance(parsed['Answer'], list)
+        result = {}
+        for qanda in parsed['Answer']:
+            assert 'QuestionIdentifier' in qanda
+            if 'FreeText' in qanda:
+                answer = qanda['FreeText']
+            else:
+                answer = dict(qanda)
+                del answer['QuestionIdentifier']# remove dupe info
+            result[qanda['QuestionIdentifier']] = answer
+        return result
 
     def _create_hit(self, assignments, xml_question):
         response = self.mturk_client.create_hit(

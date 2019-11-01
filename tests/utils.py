@@ -15,7 +15,7 @@ def get_client(profile='anthony', production=False):
         session = boto3
 
     return session.client('mturk',
-       region_name='us-east-2',
+       region_name='us-east-1',
        endpoint_url = endpoint
     )
 

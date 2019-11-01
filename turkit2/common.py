@@ -67,4 +67,4 @@ class TextClassification(Task):
 
     def _parse(self, answer):
         result = super()._parse(answer)
-        return result['Answer'][0]['FreeText']
+        return next(iter(result.values()))
