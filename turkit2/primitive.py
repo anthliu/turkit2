@@ -2,33 +2,36 @@ import os
 from pathlib import Path
 import yaml
 
-class Image(object):
-    def __init__(self, s3client, bucket: str, path: str, url_time: int=24*60*60):
+class IImage(object):
+    def __init__(self, s3client, bucket: str):
         '''
         '''
         self.client = s3client
         self.bucket = bucket
-        self.path = path
-        self.url = None
-        self.url_time = url_time
-        self.key = 'turkit2/' + self.path
-        self.uploaded = False
+        self.urls = {}
 
-    def _upload(self):
+    def _upload(self, path):
+        assert path not in self.urls
+        key = 'turkit2/' + path
         response = self.client.upload_file(
-            self.path, self.bucket, self.key,
+            path, self.bucket, key,
             ExtraArgs={'ACL':'public-read'}
         )
+        # TODO handle errors
+        bucket_location = self.client.get_bucket_location(Bucket=self.bucket)['LocationConstraint']
+        self.urls[path] = f"https://s3-{bucket_location}.amazonaws.com/{self.bucket}/{key}"
         return response
 
-    def render(self):
-        if not self.uploaded:
-            self._upload()
-            self.uploaded = True
+    def render(self, path):
+        if path not in self.urls:
+            self._upload(path)
 
-            bucket_location = self.client.get_bucket_location(Bucket=self.bucket)['LocationConstraint']
-            
-            self.url = f"https://s3-{bucket_location}.amazonaws.com/{self.bucket}/{self.key}"
+        return f'<img src={self.urls[path]}>'
 
-        assert self.url
-        return self.url
+class IText(object):
+    def render(self, text):
+        return f'<p>{text}</p>'
+
+class OText(object):
+    def render(self, id_):
+        return f"<p><textarea name='{id_}' cols='80' rows='3'></textarea></p>"

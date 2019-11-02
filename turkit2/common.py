@@ -1,11 +1,12 @@
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 from jinja2 import Template
 
 from turkit2.base import Task
 
 class HumanIO(Task):
-    def __init__(self,
+    def __init__(self, mturk_client,
+        elements: List[Tuple[str, object]],
         title: str,
         reward: str,
         description: str,
@@ -17,11 +18,26 @@ class HumanIO(Task):
         max_heartbeat: int=600,# 10 minutes
     ):
         '''
-        TODO: INCOMPLETE
+        TODO: Documentation
         '''
-        self.schema_template = None# TODO do
+        with (Path(__file__).parent / 'schemas' / 'hio.html').open() as f:
+            schema = Template(f.read())
 
-        super().__init__(schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat)
+        self.elements = elements
+        self.elem_id_to_idx = {id_: idx for idx, (id_, _) in enumerate(self.elements)}
+
+        super().__init__(mturk_client, schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat)
+
+    def _render(self, parameters):
+        parameters = dict(parameters)
+        elem_args = [{} for _ in range(len(self.elements))]
+        for id_, args in parameters.items():
+            elem_args[self.elem_id_to_idx[id_]] = args
+
+        rendered_elements = [elem.render(**args) for (id_, elem), args in zip(self.elements, elem_args)]
+
+        return super()._render(rendered_elements=rendered_elements)
+
 
 class TextClassification(Task):
     def __init__(self, mturk_client,
