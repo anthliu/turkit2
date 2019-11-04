@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 from pathlib import Path
 import asyncio
@@ -18,7 +19,8 @@ class Task(object):
         auto_approval_delay: int=7200,# 24 hours
         max_heartbeat: int=600,# 10 minutes
         run_once=None,
-        cache_path=None
+        cache_path=None,
+        base_schema='html_question.xml'
     ):
         '''
         TODO add qualifications
@@ -30,7 +32,7 @@ class Task(object):
         '''
         self.mturk_client = mturk_client
         self.schema_template = schema_template
-        with (Path(__file__).parent / 'schemas' / 'html_question.xml').open() as f:
+        with (Path(__file__).parent / 'schemas' / base_schema).open() as f:
             self.question_schema = Template(f.read())
 
         self.answer_schema = xmlschema.XMLSchema(str(Path(__file__).parent / 'schemas' / 'QuestionFormAnswers.xsd'))
@@ -52,7 +54,7 @@ class Task(object):
                 base_path = Path(cache_path)
 
             if not base_path.exists():
-                os.mkdir(str(self.cache_path))
+                os.mkdir(str(base_path))
 
             self.cache_path = base_path / f'{self.run_id}.yaml'
 

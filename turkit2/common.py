@@ -4,6 +4,25 @@ from jinja2 import Template
 
 from turkit2.base import Task
 
+class External(Task):
+    def __init__(self, mturk_client,
+        title: str,
+        reward: str,
+        description: str,
+        duration: int,
+        lifetime: int,
+        #
+        keywords: str='',
+        auto_approval_delay: int=7200,# 24 hours
+        max_heartbeat: int=600,# 10 minutes
+    ):
+        schema = None
+        super().__init__(mturk_client, schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat, base_schema='external_question.xml')
+
+    def _render(self, url):
+        xml_question = self.question_schema.render(external_url=url.replace('&', '&amp;'))
+        return xml_question
+
 class HumanIO(Task):
     def __init__(self, mturk_client,
         elements: List[Tuple[str, object]],
