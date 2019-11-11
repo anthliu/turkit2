@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from jinja2 import Template
 
 from turkit2.base import Task
@@ -15,9 +15,12 @@ class External(Task):
         keywords: str='',
         auto_approval_delay: int=7200,# 24 hours
         max_heartbeat: int=600,# 10 minutes
+        qualifications: List[object]=[],
+        run_once=None,
+        cache_path=None,
     ):
         schema = None
-        super().__init__(mturk_client, schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat, base_schema='external_question.xml')
+        super().__init__(mturk_client, schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat, qualifications=qualifications, run_once=run_once, cache_path=cache_path, base_schema='external_question.xml')
 
     def _render(self, url):
         xml_question = self.question_schema.render(external_url=url.replace('&', '&amp;'))
@@ -35,6 +38,9 @@ class HumanIO(Task):
         keywords: str='',
         auto_approval_delay: int=7200,# 24 hours
         max_heartbeat: int=600,# 10 minutes
+        qualifications: List[object]=[],
+        run_once=None,
+        cache_path=None,
     ):
         '''
         TODO: Documentation
@@ -45,7 +51,7 @@ class HumanIO(Task):
         self.elements = elements
         self.elem_id_to_idx = {id_: idx for idx, (id_, _) in enumerate(self.elements)}
 
-        super().__init__(mturk_client, schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat)
+        super().__init__(mturk_client, schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat, qualifications=qualifications, run_once=run_once, cache_path=cache_path)
 
     def _render(self, parameters):
         parameters = dict(parameters)
@@ -79,6 +85,9 @@ class TextClassification(Task):
         keywords: str='',
         auto_approval_delay: int=7200,# 24 hours
         max_heartbeat: int=600,# 10 minutes
+        qualifications: List[object]=[],
+        run_once=None,
+        cache_path=None,
     ):
         '''
         TODO add documentation
@@ -89,7 +98,7 @@ class TextClassification(Task):
         self.categories = categories
         self.short_instructions = short_instructions
         self.full_instructions = full_instructions
-        super().__init__(mturk_client, schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat)
+        super().__init__(mturk_client, schema, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat, qualifications=qualifications, run_once=run_once, cache_path=cache_path)
 
     def _render(self, **schema_args):
         assert 'text' in schema_args

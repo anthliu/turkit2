@@ -1,7 +1,8 @@
 import os
-from typing import Optional
+from typing import Optional, List
 from pathlib import Path
 import asyncio
+import yaml
 #from xml.sax.saxutils import escape
 import xmlschema
 from jinja2 import Template
@@ -18,6 +19,7 @@ class Task(object):
         keywords: str='',
         auto_approval_delay: int=7200,# 24 hours
         max_heartbeat: int=600,# 10 minutes
+        qualifications: List[object]=[],
         run_once=None,
         cache_path=None,
         base_schema='html_question.xml'
@@ -46,6 +48,8 @@ class Task(object):
         self.lifetime = lifetime
         self.max_heartbeat = max_heartbeat
 
+        self.qualifications = qualifications
+
         if run_once is not None:
             self.run_id = run_once
             if cache_path is None:
@@ -72,7 +76,7 @@ class Task(object):
         }
 
         with self.cache_path.open('w') as f:
-            yaml.dump(f, data)
+            yaml.dump(data, f)
 
     def _render(self, **schema_args):
         html_content = self.schema_template.render(**schema_args)
@@ -106,7 +110,8 @@ class Task(object):
             LifetimeInSeconds=self.lifetime,
             AssignmentDurationInSeconds=self.duration,
             AutoApprovalDelayInSeconds=self.auto_approval_delay,
-            Question=xml_question
+            Question=xml_question,
+            QualificationRequirements=[qual.get() for qual in self.qualifications]
         )
         return response
 

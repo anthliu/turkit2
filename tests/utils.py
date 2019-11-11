@@ -3,7 +3,7 @@ import boto3
 prod_endpoint = 'https://mturk-requester.us-east-1.amazonaws.com'
 sand_endpoint = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
 
-def get_client(profile='anthony', production=False):
+def get_client(profile=None, production=False):
     if production:
         endpoint = prod_endpoint
     else:
@@ -19,7 +19,7 @@ def get_client(profile='anthony', production=False):
        endpoint_url = endpoint
     )
 
-def get_s3(profile='anthony'):
+def get_s3(profile=None):
     if profile is not None:
         session = boto3.Session(profile_name=profile)
     else:
