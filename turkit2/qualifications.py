@@ -2,6 +2,13 @@ from pathlib import Path
 from typing import Optional
 import yaml
 
+COMPARATOR_MAP = {
+    '==': 'EqualTo',
+    '!=': 'NotEqualTo',
+    'e': 'Exists',
+    'dne': 'DoesNotExist',
+}
+
 class Locale(object):
     def __init__(self, country: str='US'):
         self.country = country
@@ -33,11 +40,12 @@ class AcceptRate(object):
         }
 
 class Unique(object):
-    def __init__(self, mturk_client, unique_id: str, description: str='', cache: str=False, cache_path: Optional[str]=None):
+    def __init__(self, mturk_client, unique_id: str, comparator: str='dne', description: str='', use_cache: str=False, cache_path: Optional[str]=None):
         self.mturk_client = mturk_client
         self.unique_id = unique_id
         self.description = description
-        if cache:
+        self.use_cache = use_cache
+        if use_cache:
             self.run_id = 'universe'
             if cache_path is None:
                 base_path = Path.cwd() / '.turkit_cache'
@@ -50,6 +58,8 @@ class Unique(object):
             self.cache_path = base_path / f'{self.run_id}.yaml'
 
         self.qual = None
+        assert comparator in COMPARATOR_MAP
+        self.comparator = COMPARATOR_MAP[comparator]
 
     def _create_unique_qualification(self):
         response = self.mturk_client.create_qualification_type(
@@ -64,20 +74,30 @@ class Unique(object):
     def get(self):
         if self.qual is not None:
             return self.qual
-
-        cache = self._get_cache()
-        cache.setdefault('unique_qual', {})
-        if self.unique_id in cache['unique_qual']:
-            self.qual = cache['unique_qual'][self.unique_id]
-            return self.qual
+        
+        # TODO make cleaner
+        if self.use_cache:
+            cache = self._get_cache()
+            cache.setdefault('unique_qual', {})
+            if self.unique_id in cache['unique_qual']:
+                self.qual = cache['unique_qual'][self.unique_id]
+                return self.qual
+            else:
+                qual_id = self._create_unique_qualification()
+                self.qual = {
+                    'QualificationTypeId': qual_id,
+                    'Comparator': self.comparator,
+                    'ActionsGuarded': 'DiscoverPreviewAndAccept',
+                }
+                cache['unique_qual'][self.unique_id] = self.qual
+                self._write_cache(cache)
+                return self.qual
         else:
             qual_id = self._create_unique_qualification()
             self.qual = {
                 'QualificationTypeId': qual_id,
-                'Comparator': 'DoesNotExist'
+                'Comparator': self.comparator
             }
-            cache['unique_qual'][self.unique_id] = self.qual
-            self._write_cache(cache)
             return self.qual
 
     def _get_cache(self):

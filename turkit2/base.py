@@ -22,7 +22,7 @@ class Task(object):
         qualifications: List[object]=[],
         run_once=None,
         cache_path=None,
-        base_schema='html_question.xml'
+        base_schema='html_question.xml',
     ):
         '''
         TODO add qualifications

@@ -33,5 +33,7 @@ class IText(object):
         return f'<p>{text}</p>'
 
 class OText(object):
-    def render(self, id_):
-        return f"<p><textarea name='{id_}' cols='80' rows='3'></textarea></p>"
+    def __init__(self, id_):
+        self.id_ = id_
+    def render(self):
+        return f"<p><textarea name='{self.id_}' cols='80' rows='3'></textarea></p>"

@@ -1,8 +1,11 @@
 from pathlib import Path
 from typing import List, Tuple, Optional
+import uuid
 from jinja2 import Template
 
 from turkit2.base import Task
+from turkit2.primitive import IText, OText
+from turkit2.qualifications import Unique
 
 class External(Task):
     def __init__(self, mturk_client,
@@ -62,6 +65,40 @@ class HumanIO(Task):
         rendered_elements = [elem.render(**args) for (id_, elem), args in zip(self.elements, elem_args)]
 
         return super()._render(rendered_elements=rendered_elements)
+
+class BonusTask(HumanIO):
+    def __init__(self, mturk_client,
+        title: str,
+        reward: str,
+        description: str,
+        duration: int,
+        lifetime: int,
+        worker_ids: List[str],
+        #
+        keywords: str='',
+        auto_approval_delay: int=600,# 10 minutes
+        max_heartbeat: int=600,# 10 minutes
+    ):
+        elements = [('message', IText()), ('feedback', OText(id_='feedback'))]
+        run_once = None
+        cache_path = None
+        self.worker_ids = worker_ids
+
+        id_ = str(uuid.uuid4())
+        qual = Unique(mturk_client, id_, comparator='e', description='Worker Bonus Qual')
+        response = qual.get()
+        for worker_id in self.worker_ids:
+            mturk_client.associate_qualification_with_worker(
+                QualificationTypeId=response['QualificationTypeId'],
+                WorkerId=worker_id,
+                SendNotification=False
+            )
+        qualifications = [qual]
+
+        super().__init__(mturk_client, elements, title, reward, description, duration, lifetime, keywords, auto_approval_delay, max_heartbeat, qualifications=qualifications, run_once=run_once, cache_path=cache_path)
+
+    def _render(self, message):
+        return super()._render(parameters={'message': {'text': message}})
 
 
 class TextClassification(Task):
