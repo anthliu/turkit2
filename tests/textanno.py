@@ -25,7 +25,8 @@ task = Task(client, schema, 'Test', '0.01', 'test test', 600, 6000)
 
 args = {
     'docs': {1: doc1, 2: doc2, 3: doc3},
-    'categories': ['positive', 'negative']
+    'categories': ['positive', 'negative'],
+    'suggestions': {1: "positive", 2: "negative", 3: "positive"}
 }
 
 async def proc():

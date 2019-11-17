@@ -23,62 +23,78 @@
 
 </style>
 <script src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js' type='text/javascript'></script>
-<script src="../node_modules/timeme.js/timeme.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>  
-<script type="text/javascript"> 
-    //this code assumes jQuery is implemented, though it would not be difficult to do this with straight javascript. .ready() assures the code runs after the submit button is added  
-    $(document).ready(function () {  
-
-        TimeMe.initialize({
-            currentPageName: "turkit", 
-            idleTimeoutInSeconds: -1, 
-        });
-        $("#radio").click(function() {
-            var currentTime = TimeMe.getTimeOnCurrentPageInSeconds();
-            //FIXME: Store this value in a db or somewhere where we can see it once the HIT has been completed
-        });
-
-        var studyName="turkit2019";//replace this value with a unique, acceptable cookie name... no spaces and stick with alphanumerics and underscores  
-        $("#submitButton").click(function(){  
-            var exdate=new Date();  
-            exdate.setDate(exdate.getDate() + 365);  
-            document.cookie=studyName+"=1; expires="+exdate.toUTCString()+"; domain=mturkcontent.com; path=/";//When the user clicks the Submit button, it creates a cookie that you can read later as having already completed this survey  
-        });  
-
+<script type="text/javascript">
+    $(document).ready(function () { 
+        // Check if cookie exists
+        var studyName="textanno2019";
         var i,x,y,ARRcookies=document.cookie.split(";");//variables necessary to read the cookies. Last variables separates all available cookie names into an array we will loop through to find our cookie  
         for (i=0;i<ARRcookies.length;i++){  
             x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));//x=cookie name  
             y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);//y=cookie value  
             x=x.replace(/^\s+|\s+$/g,"");//Remove white space  
-            if (x==studyName && y==1){  
-                //If your cookie exists AND the value is 1, they have taken your survey before.  
-                //Here you would put code that somehow prevents them from doing anything for your HIT, like not loading content etc.  
-                //However, for our purposes here, I just put a simple alert in. Change this to whatever code works for you.  
-                alert("You are not eligible for this HIT because you have already completed an identical HIT.");  
-            }  
-        }  
-    });  
-</script> 
-<form action="https://workersandbox.mturk.com/mturk/externalSubmit" id="mturk_form" method="post" name="mturk_form">
-    <div id="instructions_container">
-        <div id="instructions_text">
-            <div>Instructions:</div>
-            <ul>
-                <li>Read each block of text</li>
-                <li>For each, decide whether the text has an overall positive or negative tone and select the corresponding button</li>
-                <li>[FIXME: ADD EXPLANATION OF SUGGESTIONS]</li>
-            </ul>
+            if (x==studyName){
+                if (y == 1){  
+                    document.getElementById("form").style.visibility = 0;
+                    alert("You are not eligible for this HIT because you have already completed an identical HIT.");  
+                    window.location.href = "https://www.mturk.com/";
+                }
+            }
+        }
+    });
+
+    var startTime = Date.now();
+
+    function submitfunc() {
+        console.log("submit triggered");
+        var currTime = parseInt(Date.now() - startTime) / 1000;
+        console.log("submit_press: " + currTime + "\n");
+        document.getElementById("timeValues").value += "submit_press: " + currTime + "\n";
+
+        // Set cookie
+        var exdate=new Date();  
+        exdate.setDate(exdate.getDate() + 365);  
+        document.cookie=studyName+"=1; expires="+exdate.toUTCString()+"; domain=mturkcontent.com; path=/";
+        console.log("cookie set");
+        console.log(document.cookie);
+    }
+
+    function radioclick() {
+        console.log("radio clicked");
+        var currTime = parseInt(Date.now() - startTime) / 1000;
+        console.log("radio_press: " + currTime + "\n");
+        document.getElementById("timeValues").value += "radio_press: " + currTime + "\n";
+    }
+
+</script>
+<div id="form">
+    <form action="https://workersandbox.mturk.com/mturk/externalSubmit" id="mturk_form" method="post" name="mturk_form" >
+        <div id="instructions_container">
+            <div id="instructions_text">
+                <div>Instructions:</div>
+                <ul>
+                    <li>Read each block of text</li>
+                    <li>For each, decide whether the text has an overall positive or negative tone and select the corresponding button</li>
+                    <li>Values for each text will be preselected by the computer based on an algorithm, if they are wrong, select the correct tone</li>
+                </ul>
+            </div>
         </div>
-    </div>
-    <input id="assignmentId" name="assignmentId" type="hidden" value="" />
-    {% for id, text in docs.items() %}
-    <div id="text">{{text}}</div>
-        <div id="sentiment">
-            <div>Sentiment:</div>
-            {% for category in categories %}
-            <input type="radio" name="{{id}}" value="{{category}}" id="radio">{{category}}<br>
-            {% endfor %}
-        </div>
-    {% endfor %}
-    <p><input id="submitButton" type="submit" value="Submit" /></p>
-</form><script language='Javascript'>turkSetAssignmentID();</script>
+        <input id="assignmentId" name="assignmentId" type="hidden" value="" />
+        {% for id, text in docs.items() %}
+        <div id="text">{{text}}</div>
+            <div id="sentiment">
+                <div>Sentiment:</div>
+                {% for category in categories %}
+                    {% if suggestions.get(id) == category %}
+                        <input type="radio" name="{{id}}" value="{{category}}" id="radio" onclick="radioclick()" checked>{{category}}<br>
+                    {% else %}
+                        <input type="radio" name="{{id}}" value="{{category}}" id="radio" onclick="radioclick()" >{{category}}<br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <p><input id="submitButton" type="submit" value="Submit" onclick="submitfunc()" /></p>
+        <p><input type="hidden" id="timeValues" value = ""/></p>
+    </form>
+</div>
+<script language='Javascript'>turkSetAssignmentID();</script>
