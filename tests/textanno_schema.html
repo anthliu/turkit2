@@ -4,7 +4,6 @@
         padding-top: 10px;
         padding-right: 10px;
         padding-bottom: 10px;
-        
     }
 
     #sentiment {
@@ -24,6 +23,42 @@
 
 </style>
 <script src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js' type='text/javascript'></script>
+<script src="../node_modules/timeme.js/timeme.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>  
+<script type="text/javascript"> 
+    //this code assumes jQuery is implemented, though it would not be difficult to do this with straight javascript. .ready() assures the code runs after the submit button is added  
+    $(document).ready(function () {  
+
+        TimeMe.initialize({
+            currentPageName: "turkit", 
+            idleTimeoutInSeconds: -1, 
+        });
+        $("#radio").click(function() {
+            var currentTime = TimeMe.getTimeOnCurrentPageInSeconds();
+            //FIXME: Store this value in a db or somewhere where we can see it once the HIT has been completed
+        });
+
+        var studyName="turkit2019";//replace this value with a unique, acceptable cookie name... no spaces and stick with alphanumerics and underscores  
+        $("#submitButton").click(function(){  
+            var exdate=new Date();  
+            exdate.setDate(exdate.getDate() + 365);  
+            document.cookie=studyName+"=1; expires="+exdate.toUTCString()+"; domain=mturkcontent.com; path=/";//When the user clicks the Submit button, it creates a cookie that you can read later as having already completed this survey  
+        });  
+
+        var i,x,y,ARRcookies=document.cookie.split(";");//variables necessary to read the cookies. Last variables separates all available cookie names into an array we will loop through to find our cookie  
+        for (i=0;i<ARRcookies.length;i++){  
+            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));//x=cookie name  
+            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);//y=cookie value  
+            x=x.replace(/^\s+|\s+$/g,"");//Remove white space  
+            if (x==studyName && y==1){  
+                //If your cookie exists AND the value is 1, they have taken your survey before.  
+                //Here you would put code that somehow prevents them from doing anything for your HIT, like not loading content etc.  
+                //However, for our purposes here, I just put a simple alert in. Change this to whatever code works for you.  
+                alert("You are not eligible for this HIT because you have already completed an identical HIT.");  
+            }  
+        }  
+    });  
+</script> 
 <form action="https://workersandbox.mturk.com/mturk/externalSubmit" id="mturk_form" method="post" name="mturk_form">
     <div id="instructions_container">
         <div id="instructions_text">
@@ -41,7 +76,7 @@
         <div id="sentiment">
             <div>Sentiment:</div>
             {% for category in categories %}
-            <input type="radio" name="{{id}}" value="{{category}}">{{category}}<br>
+            <input type="radio" name="{{id}}" value="{{category}}" id="radio">{{category}}<br>
             {% endfor %}
         </div>
     {% endfor %}
