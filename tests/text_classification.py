@@ -9,7 +9,7 @@ from utils import get_client
 client = get_client()
 
 id_ = str(uuid.uuid4())
-quals = [Unique(client, id_, cache=True), Locale(), AcceptRate()]
+quals = [Locale(), AcceptRate()]
 task = TextClassification(client, 'Test3', '0.01', 'test test', 600, 6000, ['positive', 'negative'], qualifications=quals)
 
 documents = [f'test{i}' for i in range(5)]

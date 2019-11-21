@@ -3,6 +3,7 @@ from typing import Optional, List
 from pathlib import Path
 import asyncio
 import yaml
+import webbrowser
 #from xml.sax.saxutils import escape
 import xmlschema
 from jinja2 import Template
@@ -129,7 +130,9 @@ class Task(object):
         assert "sandbox" in str(self.mturk_client._endpoint), "Need to preview in sandbox! (Use sandbox endpoint)"
         xml_question = self._render(**schema_args)
         response = self._create_hit(1, xml_question)
-        return "https://workersandbox.mturk.com/mturk/preview?groupId=" + response['HIT']['HITGroupId']
+        url = "https://workersandbox.mturk.com/mturk/preview?groupId=" + response['HIT']['HITGroupId']
+        webbrowser.open_new_tab(url)
+        return url
 
     def ask(self, assignments: int=1, verbosity: int=0, **schema_args):
         yield from asyncio.run(self.ask_async(assignments, verbosity, **schema_args))
