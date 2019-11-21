@@ -1,7 +1,6 @@
 import sys
 import asyncio
 
-from context import turkit2
 from turkit2.common import External
 from utils import get_client
 

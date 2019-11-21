@@ -1,7 +1,6 @@
 import asyncio
 import uuid
 
-from context import turkit2
 from turkit2.common import TextClassification
 from turkit2.qualifications import Unique, Locale, AcceptRate
 from utils import get_client

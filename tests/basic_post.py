@@ -1,4 +1,3 @@
-from context import turkit2
 from turkit2.base import Task
 
 from jinja2 import Template

@@ -2,7 +2,6 @@ import sys
 import argparse
 import asyncio
 
-from context import turkit2
 from turkit2.common import BonusTask
 from utils import get_client
 

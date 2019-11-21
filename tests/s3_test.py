@@ -1,5 +1,3 @@
-from context import turkit2
-
 import boto3
 from utils import get_s3
 from turkit2.primitive import IImage

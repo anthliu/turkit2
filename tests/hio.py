@@ -1,6 +1,5 @@
 import asyncio
 
-from context import turkit2
 from turkit2.common import HumanIO
 from turkit2.primitive import IText, OText, IImage
 from utils import get_client, get_s3
