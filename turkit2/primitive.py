@@ -37,3 +37,12 @@ class OText(object):
         self.id_ = id_
     def render(self):
         return f"<p><textarea name='{self.id_}' cols='80' rows='3'></textarea></p>"
+
+class OChoice(object):
+    def __init__(self, id_):
+        self.id_ = id_
+    def render(self, choices):
+        return '\n'.join(
+            f'<input type="radio" name="{self.id_}" value="{choice}" id="radio" onclick="radioclick()" checked>{choice}<br>'
+            for choice in choices
+        )
