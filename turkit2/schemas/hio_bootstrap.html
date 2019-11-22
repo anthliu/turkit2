@@ -1,0 +1,14 @@
+<meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js' type='text/javascript'></script>
+<form action="https://workersandbox.mturk.com/mturk/externalSubmit" id="mturk_form" method="post" name="mturk_form">
+    <input id="assignmentId" name="assignmentId" type="hidden" value="" />
+    {% for rendered in rendered_elements %}
+    <div class="card">
+        <div class="card-body">
+        {{rendered}}
+        </div>
+    </div>
+    {% endfor %}
+    <p><input id="submitButton" type="submit" class="btn btn-primary" value="Submit" /></p>
+</form><script language='Javascript'>turkSetAssignmentID();</script>

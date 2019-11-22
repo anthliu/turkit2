@@ -48,7 +48,7 @@ class HumanIO(Task):
         '''
         TODO: Documentation
         '''
-        with (Path(__file__).parent / 'schemas' / 'hio.html').open() as f:
+        with (Path(__file__).parent / 'schemas' / 'hio_bootstrap.html').open() as f:
             schema = Template(f.read())
 
         self.elements = elements
