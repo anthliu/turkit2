@@ -6,8 +6,9 @@
         padding-bottom: 10px;
     }
 
-    #sentiment {
+    #sentiment, #agree_disagree {
         padding-left: 10px;
+        padding-bottom: 10px;
     }
 
     #instructions_container {
@@ -36,8 +37,8 @@
             if (x==studyName){
                 if (y == 1){  
                     document.getElementById("form").style.visibility = 0;
-                    alert("You are not eligible for this HIT because you have already completed an identical HIT.");  
-                    window.location.href = "https://www.mturk.com/";
+                    alert("You are not eligible for this HIT because you have already completed an identical HIT.");
+                    document.getElementById("submitButton").disabled = true;
                 }
             }
         }
@@ -69,32 +70,81 @@
 </script>
 <div id="form">
     <form action="https://workersandbox.mturk.com/mturk/externalSubmit" id="mturk_form" method="post" name="mturk_form" >
-        <div id="instructions_container">
-            <div id="instructions_text">
-                <div>Instructions:</div>
-                <ul>
-                    <li>Read each block of text</li>
-                    <li>For each, decide whether the text has an overall positive or negative tone and select the corresponding button</li>
-                    <li>Values for each text will be preselected by the computer based on an algorithm, if they are wrong, select the correct tone</li>
-                </ul>
+        {% if interface == 'self' %}
+            <div id="instructions_container">
+                <div id="instructions_text">
+                    <div>Instructions:</div>
+                    <ul>
+                        <li>Read each block of text</li>
+                        <li>For each, decide whether the text has an overall positive or negative tone and select the corresponding button</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <input id="assignmentId" name="assignmentId" type="hidden" value="" />
-        {% for id, text in docs.items() %}
-        <div id="text">{{text}}</div>
-            <div id="sentiment">
-                <div>Sentiment:</div>
-                {% for category in categories %}
-                    {% if suggestions.get(id) == category %}
+            <input id="assignmentId" name="assignmentId" type="hidden" value="" />
+            {% for id, text in docs.items() %}
+            <div id="text">{{text}}</div>
+                <div id="sentiment">
+                    <div>Sentiment:</div>
+                    {% for category in categories %}
                         <input type="radio" name="{{id}}" value="{{category}}" id="radio" onclick="radioclick()" checked>{{category}}<br>
-                    {% else %}
-                        <input type="radio" name="{{id}}" value="{{category}}" id="radio" onclick="radioclick()" >{{category}}<br>
-                    {% endif %}
-                {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <p><input id="submitButton" type="submit" value="Submit" onclick="submitfunc()" /></p>
+            <p><input type="hidden" id="timeValues" value = ""/></p>
+        {% elif interface == 'suggestions' %}
+            <div id="instructions_container">
+                <div id="instructions_text">
+                    <div>Instructions:</div>
+                    <ul>
+                        <li>Read each block of text</li>
+                        <li>For each, decide whether the text has an overall positive or negative tone and select the corresponding button</li>
+                        <li>Values for each text will be preselected by the computer based on an algorithm, if they are wrong, select the correct tone</li>
+                    </ul>
+                </div>
             </div>
-        {% endfor %}
-        <p><input id="submitButton" type="submit" value="Submit" onclick="submitfunc()" /></p>
-        <p><input type="hidden" id="timeValues" value = ""/></p>
+            <input id="assignmentId" name="assignmentId" type="hidden" value="" />
+            {% for id, text in docs.items() %}
+            <div id="text">{{text}}</div>
+                <div id="sentiment">
+                    <div>Sentiment:</div>
+                    {% for category in categories %}
+                        {% if suggestions.get(id) == category %}
+                            <input type="radio" name="{{id}}" value="{{category}}" id="radio" onclick="radioclick()" checked>{{category}}<br>
+                        {% else %}
+                            <input type="radio" name="{{id}}" value="{{category}}" id="radio" onclick="radioclick()" >{{category}}<br>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <p><input id="submitButton" type="submit" value="Submit" onclick="submitfunc()" /></p>
+            <p><input type="hidden" id="timeValues" value = ""/></p>
+        {% elif interface == 'agree_disagree' %}
+            <div id="instructions_container">
+                <div id="instructions_text">
+                    <div>Instructions:</div>
+                    <ul>
+                        <li>Read each block of text</li>
+                        <li>For each, decide whether the text has an overall positive or negative tone and select the corresponding button</li>
+                        <li>The computer will tell you, for each text, what it believes the tone to be. Select whether you agree or disagree with it using the buttons under each text</li>
+                    </ul>
+                </div>
+            </div>
+            <input id="assignmentId" name="assignmentId" type="hidden" value="" />
+            {% for id, text in docs.items() %}
+            <div id="text">{{text}}</div>
+                <div id="sentiment">Computer suggestion of sentiment: {{suggestions.get(id)}}</div>
+                <div id="agree_disagree">
+                    <div>The computer suggestion is correct:</div>
+                    {% for category in categories_agree %}
+                        <input type="radio" name="{{id}}" id="radio" onclick="radioclick()" checked>{{category}}<br>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <p><input id="submitButton" type="submit" value="Submit" onclick="submitfunc()" /></p>
+            <p><input type="hidden" id="timeValues" value = ""/></p>
+        {% endif %}
+        
     </form>
 </div>
 <script language='Javascript'>turkSetAssignmentID();</script>
