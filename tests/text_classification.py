@@ -7,7 +7,6 @@ from utils import get_client
 
 client = get_client()
 
-id_ = str(uuid.uuid4())
 quals = [Locale(), AcceptRate()]
 task = TextClassification(client, 'Test3', '0.01', 'test test', 600, 6000, ['positive', 'negative'], qualifications=quals)
 
