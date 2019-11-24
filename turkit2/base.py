@@ -9,6 +9,9 @@ import xmlschema
 from jinja2 import Template
 
 class Task(object):
+    """
+    TODO
+    """
     def __init__(self, mturk_client,
         schema_template : Template,
         title: str,
@@ -135,6 +138,9 @@ class Task(object):
         return url
 
     def ask(self, assignments: int=1, verbosity: int=0, **schema_args):
+        """
+        TODO
+        """
         yield from asyncio.run(self.ask_async(assignments, verbosity, **schema_args))
 
     async def ask_async(self, assignments: int=1, verbosity: int=0, **schema_args):
