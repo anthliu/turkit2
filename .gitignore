@@ -1,3 +1,4 @@
+docs
 *.key
 tests/.turkit_cache/*
 
