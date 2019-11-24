@@ -12,6 +12,7 @@ Welcome to turkit2's documentation!
 
    about
    tutorial
+   schemas
 
 .. toctree::
    :maxdepth: 2
@@ -21,7 +22,6 @@ Welcome to turkit2's documentation!
    common
    qualifications
    primitive
-   schemas
 
 Indices and tables
 ==================
