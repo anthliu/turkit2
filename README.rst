@@ -25,16 +25,30 @@ Turkit2 is built on top of the low level AWS API boto3, and uses Jinja2 for its 
 Installation
 ------------
 
-:code:`pip install -r requirements.txt`.
+#. :code:`pip install -r requirements.txt`.
+#. Install the aws cli to use your AWS keys with boto3.
+   https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html
+#. Run :code:`aws configure`
+   
+   For region: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
+   
+   Output format: None is fine (just press enter).
+#. Navigate to a directory you want to save the library code. (command line)
+   
+   .. code-block:: bash
+      
+      git clone https://github.com/anthliu/turkit2.git
+      cd turkit2
+      pip install -e .
+#. Check to make sure your installation works. Navigate to a working directory
 
-Install the aws cli to use your AWS keys with boto3.
-https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html
+   .. code-block:: bash
+      
+      wget https://raw.githubusercontent.com/anthliu/turkit2/master/tests/installation_test.py
+      python installation_test.py
+   
+   This should open a tab in your browser to a sandbox mturk task that was created in the test script.
 
-Then run :code:`aws configure`
-
-For region: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
-
-Output format: None is fine (just press enter).
 
 Documentation
 -------------
