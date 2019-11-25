@@ -1,10 +1,6 @@
-.. turkit2 documentation master file, created by
-   sphinx-quickstart on Sun Nov 24 17:06:02 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to turkit2's documentation!
-===================================
+#######
+Turkit2
+#######
 
 **Currently in development**
 
@@ -26,27 +22,21 @@ A typical workflow is as follows.
 
 Turkit2 is built on top of the low level AWS API boto3, and uses Jinja2 for its templating mechanism.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Guide:
+Installation
+------------
 
-   installation
-   task-objects
-   tutorial
-   schemas
+:code:`pip install -r requirements.txt`.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Modules:
+Install the aws cli to use your AWS keys with boto3.
+https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html
 
-   base
-   common
-   qualifications
-   primitive
+Then run :code:`aws configure`
 
-Indices and tables
-==================
+For region: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Output format: None is fine (just press enter).
+
+Documentation
+-------------
+
+https://turkit2.readthedocs.io/en/latest/
