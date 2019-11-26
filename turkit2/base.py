@@ -141,7 +141,12 @@ class Task(object):
         """
         TODO
         """
-        yield from asyncio.run(self.ask_async(assignments, verbosity, **schema_args))
+        async def wait_answers():
+            results = []
+            async for answer, assignment in self.ask_async(assignments, verbosity, **schema_args):
+                results.append((answer, assignment))
+            return results
+        return asyncio.run(wait_answers())
 
     async def ask_async(self, assignments: int=1, verbosity: int=0, **schema_args):
         xml_question = self._render(**schema_args)
