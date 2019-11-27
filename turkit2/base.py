@@ -10,7 +10,36 @@ from jinja2 import Template
 
 class Task(object):
     """
-    TODO
+    All task objects inherit from Task.
+    Use when a static webpage is the task to be posted.
+    Pass in the webpage as a Jinja2 template.
+
+    TODO implement run once
+
+    :param mturk_client: boto3 mturk client
+    :param schema_template: a Jinja2 template supplied to generate the task from. Template args are supplied in the ask and ask_async functions.
+    :param title: the HIT title shown to workers in the "marketplace"
+    :type title: str
+    :param reward: reward of completing the HIT in string (e.g. "0.15" is 15 cents)
+    :type reward: str
+    :param description: the HIT description shown to workers in the "marketplace"
+    :type description: str
+    :param duration: Time workers have to complete the HIT after accepting (seconds)
+    :type duration: int
+    :param lifetime: Time the HIT lasts in the "marketplace" (seconds)
+    :type lifetime: int
+    :param keywords: (default='') HIT keywords in "marketplace"
+    :type keywords: str
+    :param auto_approval_delay: (default=7200 (24 hours)) Time before a submitted HIT is automatically approved (seconds)
+    :type auto_approval_delay: int
+    :param max_heartbeat: (default=600 (10 minutes)) The maximum interval Turkit2 checks MTurk whether new assignments have been submitted
+    :type max_heartbeat: int
+    :param qualifications: (default=[]) List of qualifications (from qualifications module) restricting workers that can work on this HIT
+    :type qualifications: List[qualifications]
+    :param run_once: (default=None) Supply a unique ID to cache answers from workers so that when the same ID is supplied, the HIT is not posted again
+    :type run_once: str, optional
+    :param cache_path: (default=None) Supply a custom cache path for run_once. If not supplied, use current_dictory/.turkit_cache
+    :type cache_path: str, optional
     """
     def __init__(self, mturk_client,
         schema_template : Template,
@@ -29,12 +58,6 @@ class Task(object):
         base_schema='html_question.xml',
     ):
         '''
-        TODO add qualifications
-        TODO add documentation
-        TODO implement run once
-
-        run_once: add ID to use (str)
-        cache_path: path to cache results for run_once (default if None)
         '''
         self.mturk_client = mturk_client
         self.schema_template = schema_template
@@ -130,6 +153,12 @@ class Task(object):
         return response['Assignments']
 
     def preview(self, **schema_args):
+        """
+        Use to preview the task object on MTurk. Will automatically post the HIT
+        to MTurk (after asserting the client is sandbox) and open a browser with the HIT.
+
+        :param \**schema_args: Arguments to add to the schema template
+        """
         assert "sandbox" in str(self.mturk_client._endpoint), "Need to preview in sandbox! (Use sandbox endpoint)"
         xml_question = self._render(**schema_args)
         response = self._create_hit(1, xml_question)
@@ -139,7 +168,8 @@ class Task(object):
 
     def ask(self, assignments: int=1, verbosity: int=0, **schema_args):
         """
-        TODO
+        Post HITs to MTurk, wait, parse and return results as a generator. Non async version.
+        Same parameters as ask_async.
         """
         async def wait_answers():
             results = []
@@ -149,6 +179,16 @@ class Task(object):
         return asyncio.run(wait_answers())
 
     async def ask_async(self, assignments: int=1, verbosity: int=0, **schema_args):
+        """
+        Post HITs to MTurk, wait, parse and return results as a generator. Non async version.
+        Same parameters as ask_async.
+
+        :param assignments: Number of assignments to add to a HIT. *NOTE* HITs with asssignments >= 10 are upcharged about 20% by Amazon.
+        :type assignments: int
+        :param verbosity: How much to print during execution.
+        :type verbosity: int
+        :param \**schema_args: Arguments to add to the schema template
+        """
         xml_question = self._render(**schema_args)
 
         response = self._create_hit(assignments, xml_question)

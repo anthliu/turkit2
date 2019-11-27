@@ -8,6 +8,33 @@ from turkit2.primitive import IText, OText
 from turkit2.qualifications import Unique
 
 class External(Task):
+    """
+    Use to post a HIT where the task is hosted in an external website.
+
+    :param mturk_client: boto3 mturk client
+    :param title: the HIT title shown to workers in the "marketplace"
+    :type title: str
+    :param reward: reward of completing the HIT in string (e.g. "0.15" is 15 cents)
+    :type reward: str
+    :param description: the HIT description shown to workers in the "marketplace"
+    :type description: str
+    :param duration: Time workers have to complete the HIT after accepting (seconds)
+    :type duration: int
+    :param lifetime: Time the HIT lasts in the "marketplace" (seconds)
+    :type lifetime: int
+    :param keywords: (default='') HIT keywords in "marketplace"
+    :type keywords: str
+    :param auto_approval_delay: (default=7200 (24 hours)) Time before a submitted HIT is automatically approved (seconds)
+    :type auto_approval_delay: int
+    :param max_heartbeat: (default=600 (10 minutes)) The maximum interval Turkit2 checks MTurk whether new assignments have been submitted
+    :type max_heartbeat: int
+    :param qualifications: (default=[]) List of qualifications (from qualifications module) restricting workers that can work on this HIT
+    :type qualifications: List[qualifications]
+    :param run_once: (default=None) Supply a unique ID to cache answers from workers so that when the same ID is supplied, the HIT is not posted again
+    :type run_once: str, optional
+    :param cache_path: (default=None) Supply a custom cache path for run_once. If not supplied, use current_dictory/.turkit_cache
+    :type cache_path: str, optional
+    """
     def __init__(self, mturk_client,
         title: str,
         reward: str,
@@ -30,6 +57,35 @@ class External(Task):
         return xml_question
 
 class HumanIO(Task):
+    """
+    Use to post a HIT where the task is hosted in an external website. Learn more in :ref:`HumanIO Tasks`.
+
+    :param mturk_client: boto3 mturk client
+    :param elements: The (ID, primitive) list composing the HumanIO task.
+    :type elements: List[Tuplie[str, object]]
+    :param title: the HIT title shown to workers in the "marketplace"
+    :type title: str
+    :param reward: reward of completing the HIT in string (e.g. "0.15" is 15 cents)
+    :type reward: str
+    :param description: the HIT description shown to workers in the "marketplace"
+    :type description: str
+    :param duration: Time workers have to complete the HIT after accepting (seconds)
+    :type duration: int
+    :param lifetime: Time the HIT lasts in the "marketplace" (seconds)
+    :type lifetime: int
+    :param keywords: (default='') HIT keywords in "marketplace"
+    :type keywords: str
+    :param auto_approval_delay: (default=7200 (24 hours)) Time before a submitted HIT is automatically approved (seconds)
+    :type auto_approval_delay: int
+    :param max_heartbeat: (default=600 (10 minutes)) The maximum interval Turkit2 checks MTurk whether new assignments have been submitted
+    :type max_heartbeat: int
+    :param qualifications: (default=[]) List of qualifications (from qualifications module) restricting workers that can work on this HIT
+    :type qualifications: List[qualifications]
+    :param run_once: (default=None) Supply a unique ID to cache answers from workers so that when the same ID is supplied, the HIT is not posted again
+    :type run_once: str, optional
+    :param cache_path: (default=None) Supply a custom cache path for run_once. If not supplied, use current_dictory/.turkit_cache
+    :type cache_path: str, optional
+    """
     def __init__(self, mturk_client,
         elements: List[Tuple[str, object]],
         title: str,
@@ -107,6 +163,9 @@ class BonusTask(HumanIO):
 
 
 class TextClassification(Task):
+    """
+    Text classification HIT.
+    """
     def __init__(self, mturk_client,
         title: str,
         reward: str,

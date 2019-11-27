@@ -28,6 +28,8 @@ Using a task object is two steps.
 Each task object has *initialization parameters* (used to initialize the object),
 and *ask parameters* (used to parameterize the :code:`task.ask` function).
 
+Note: Task objects can also be previewed using the :code:`task.preview` method.
+
 
 Types of Task Objects -- Use Cases
 ==================================
