@@ -42,6 +42,7 @@ In general, we identify 4 use cases, and list them in order implementation compl
 #. **Complex Task** - This task has a complex interface (e.g. segmentation) that is cannot be implemented by the first 2 types.
    But, this type can be implemented in a static web page. Then, the programmer can program the interface in a template static webpage.
    The task object :code:`Task` object from the :ref:`base` module can be used and takes the template as a parameter.
+   How to use and create these templates (schemas) is detailed in :ref:`Schemas`.
 #. **Dynamic Task** - This task needs dynamic features of a full website. In this case, the programmer can run their website in a server, and use the :code:`External` task object from :ref:`common` by passing a URL of the website to the task object.
 
 Basic Example

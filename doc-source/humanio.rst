@@ -27,6 +27,65 @@ HumanIO tasks are used in two steps like all task objects:
 Example
 =======
 
+In this example we reimplement the text classification task in a HumanIO task object.
+
+We start as before, initializing our client.
+
+.. code-block:: python
+
+    # import boto3 to use aws python
+    import boto3
+
+    # Import HumanIO and primitives IText and OChoice
+    from turkit2.common import HumanIO
+    from turkit2.primitive import IText, OChoice
+
+    # Create an MTurk sandbox instance
+    # (aws credentials should be stored in ~/.aws, which is taken care of by awscli)
+    endpoint = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
+    client = boto3.client(
+        'mturk',
+        region_name='us-east-1',
+        endpoint_url = endpoint
+    )
+
+We stack a :code:`IText` (the text being classified)
+and a :code:`OChoice` (the class being chosen). This is indicated
+in the initialization of the HumanIO object.
+The IDs specified (prompt and answer) are important.
+
+.. code-block:: python
+
+    task = HumanIO(
+        client,
+        elements=[
+            ('prompt', IText()),# text being classified
+            ('answer', OChoice('answer_id'))# classes. 'answer_id' is used for the text box id
+        ],
+        title='Classify tweet sentiment',
+        price='0.05',
+        description='Classify the mood of a single Twitter tweet.',
+        duration=600,
+        lifetime=6000
+    )
+
+The IDs specified before are used as ask parameters.
+
+.. code-block:: python
+
+    # Post to mturk from the task object. We need to supply parameters matching the id's supplied earlier.
+    for worker_answer, assignment_details in task.ask(
+        assignments=5,
+        parameters={
+            'prompt': 'This movie is sad!',
+            'class': ['positive', 'negative']
+        }
+    ):
+        # worker_answer is a dictionary with the privious O primitive id's as keys
+        print(worker_answer['answer_id'])
+
+This is all the code in one block.
+
 .. code-block:: python
 
     # import boto3 to use aws python
@@ -51,7 +110,7 @@ Example
             ('prompt', IText()),# text being classified
             ('answer', OChoice('answer_id'))# classes. 'answer_id' is used for the text box id
         ],
-        title='Claassify tweet sentiment',
+        title='Classify tweet sentiment',
         price='0.05',
         description='Classify the mood of a single Twitter tweet.',
         duration=600,
@@ -63,8 +122,9 @@ Example
     for worker_answer, assignment_details in task.ask(
         assignments=5,
         parameters={
-            'prompt': {'This movie is sad!'},
-            'answer': {['positive', 'negative']}
+            'prompt': 'This movie is sad!',
+            'class': ['positive', 'negative']
         }
     ):
-        print(worker_answer)
+        # worker_answer is a dictionary with the privious O primitive id's as keys
+        print(worker_answer['answer_id'])
