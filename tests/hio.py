@@ -22,9 +22,9 @@ task = HumanIO(client, elements, 'Test2', '0.01', 'test test', 600, 6000)
 
 async def proc():
     parameters = {
-        'Prompt': {'text': 'How are you?'},
-        'Prompt2': {'text': 'Flip a coin.'},
-        'Prompt3': {'path': 'imgs/dog2.jpg'},
+        'Prompt': 'How are you?',
+        'Prompt2': 'Flip a coin.',
+        'Prompt3': 'imgs/dog2.jpg',
     } 
     async for answer, assignment in task.ask_async(verbosity=100, parameters=parameters):
         print(answer)

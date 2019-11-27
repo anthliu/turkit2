@@ -22,15 +22,15 @@ class IImage(object):
         self.urls[path] = f"https://s3-{bucket_location}.amazonaws.com/{self.bucket}/{key}"
         return response
 
-    def render(self, path):
-        if path not in self.urls:
-            self._upload(path)
+    def render(self, arg):
+        if arg not in self.urls:
+            self._upload(arg)
 
-        return f'<img src={self.urls[path]}>'
+        return f'<img src={self.urls[arg]}>'
 
 class IText(object):
-    def render(self, text):
-        return f'<p>{text}</p>'
+    def render(self, arg):
+        return f'<p>{arg}</p>'
 
 class OText(object):
     def __init__(self, id_):
@@ -41,8 +41,8 @@ class OText(object):
 class OChoice(object):
     def __init__(self, id_):
         self.id_ = id_
-    def render(self, choices):
+    def render(self, arg):
         return '\n'.join(
             f'<input type="radio" name="{self.id_}" value="{choice}" id="radio" onclick="radioclick()" checked>{choice}<br>'
-            for choice in choices
+            for choice in arg
         )

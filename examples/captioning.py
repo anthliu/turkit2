@@ -42,13 +42,13 @@ image_paths = glob('imgs/*')
 async def caption_image(path):
     captions = []
     async for caption, assignment in suggest_captions.ask_async(
-        verbosity=verbosity, assignments=caption_reps, parameters={'prompt': {'path': path}}
+        verbosity=verbosity, assignments=caption_reps, parameters={'prompt': path}
     ):
         captions.append(caption['answer'])
 
     votes = []
     async for vote, assignment in vote_captions.ask_async(
-        verbosity=verbosity, assignments=vote_reps, parameters={'prompt': {'path': path}, 'answer': {'choices': captions}}
+        verbosity=verbosity, assignments=vote_reps, parameters={'prompt': path, 'answer': captions}
     ):
         votes.append(vote['answer'])
 

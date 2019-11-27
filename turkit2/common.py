@@ -58,11 +58,16 @@ class HumanIO(Task):
 
     def _render(self, parameters):
         parameters = dict(parameters)
-        elem_args = [{} for _ in range(len(self.elements))]
-        for id_, args in parameters.items():
-            elem_args[self.elem_id_to_idx[id_]] = args
+        elem_args = [None for _ in range(len(self.elements))]
+        for id_, arg in parameters.items():
+            elem_args[self.elem_id_to_idx[id_]] = arg
 
-        rendered_elements = [elem.render(**args) for (id_, elem), args in zip(self.elements, elem_args)]
+        rendered_elements = []
+        for (id_, elem), arg in zip(self.elements, elem_args):
+            if arg is None:
+                rendered_elements.append(elem.render())
+            else:
+                rendered_elements.append(elem.render(arg))
 
         return super()._render(rendered_elements=rendered_elements)
 
