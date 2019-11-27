@@ -7,12 +7,12 @@ from utils import get_client
 client = get_client()
 
 quals = [Locale(), AcceptRate()]
-task = TextClassification(client, 'Test3', '0.01', 'test test', 600, 6000, ['positive', 'negative'], qualifications=quals)
+task = TextClassification(client, 'Test3', '0.01', 'test test', 600, 6000, ['positive', 'negative'], question='Which class does this text match, positive or negative?', qualifications=quals)
 
 documents = [f'test{i}' for i in range(5)]
 
 def proc(text):
-    for answer, assignment in task.ask(verbosity=100, text=text, question="Which class does this text match, 'positive' or 'negative'?"):
+    for answer, assignment in task.ask(verbosity=100, text=text):
         print(answer)
         print(assignment)
 

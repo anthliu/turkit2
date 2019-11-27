@@ -32,7 +32,7 @@ Turkit2 is built on top of the low level AWS API boto3, and uses Jinja2 for its 
 
    installation
    task-objects
-   tutorial
+   humanio
    schemas
 
 .. toctree::
