@@ -60,7 +60,7 @@ The IDs specified (prompt and answer) are important.
         client,
         elements=[
             ('prompt', IText()),# text being classified
-            ('answer', OChoice('answer_id'))# classes. 'answer_id' is used for the text box id
+            ('class', OChoice('answer_id'))# classes. 'answer_id' is used for the text box id
         ],
         title='Classify tweet sentiment',
         price='0.05',
@@ -108,7 +108,7 @@ This is all the code in one block.
         client,
         elements=[
             ('prompt', IText()),# text being classified
-            ('answer', OChoice('answer_id'))# classes. 'answer_id' is used for the text box id
+            ('class', OChoice('answer_id'))# classes. 'answer_id' is used for the text box id
         ],
         title='Classify tweet sentiment',
         price='0.05',
