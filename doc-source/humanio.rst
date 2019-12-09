@@ -63,7 +63,7 @@ The IDs specified (prompt and answer) are important.
             ('class', OChoice('answer_id'))# classes. 'answer_id' is used for the text box id
         ],
         title='Classify tweet sentiment',
-        price='0.05',
+        reward='0.05',
         description='Classify the mood of a single Twitter tweet.',
         duration=600,
         lifetime=6000
@@ -111,7 +111,7 @@ This is all the code in one block.
             ('class', OChoice('answer_id'))# classes. 'answer_id' is used for the text box id
         ],
         title='Classify tweet sentiment',
-        price='0.05',
+        reward='0.05',
         description='Classify the mood of a single Twitter tweet.',
         duration=600,
         lifetime=6000
