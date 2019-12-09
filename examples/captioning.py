@@ -6,15 +6,15 @@ from turkit2.common import HumanIO
 from turkit2.primitive import IImage, OText, OChoice
 from utils import get_client, get_s3
 
-s3 = get_s3(profile='anthony')
+s3 = get_s3()
 image_placeholder = IImage(s3, 'turkit-testing')
 
 client = get_client()
 
 session = randint(0, 100)
 
-caption_reps = 1
-vote_reps = 1
+caption_reps = 3
+vote_reps = 3
 verbosity = 100
 
 suggest_captions = HumanIO(
@@ -46,6 +46,7 @@ async def caption_image(path):
     ):
         captions.append(caption['answer'])
 
+    print(path, 'suggestions:', captions)
     votes = []
     async for vote, assignment in vote_captions.ask_async(
         verbosity=verbosity, assignments=vote_reps, parameters={'prompt': path, 'answer': captions}
@@ -53,7 +54,7 @@ async def caption_image(path):
         votes.append(vote['answer'])
 
     best_caption = max(set(votes), key=votes.count)
-    print(path, best_caption)
+    print(path, 'best:', best_caption)
 
 async def main():
     tasks = []
