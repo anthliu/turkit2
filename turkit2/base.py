@@ -131,7 +131,7 @@ class Task(object):
         response = self.mturk_client.create_hit(
             MaxAssignments=assignments,
             Title=self.title,
-            Description=self.title,
+            Description=self.description,
             Keywords=self.keywords,
             Reward=self.reward,
             LifetimeInSeconds=self.lifetime,
