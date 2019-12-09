@@ -51,7 +51,7 @@ class IText(object):
         :param arg: The argument specified to this primitive's ID in HumanIO.ask
         :type arg: str
         """
-        return f'<p>{arg}</p>'
+        return arg
 
 class OText(object):
     """
