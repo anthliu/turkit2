@@ -3,6 +3,7 @@ from random import randint
 
 from turkit2.common import HumanIO
 from turkit2.primitive import IText, OChoice, OText
+from turkit2.qualifications import Locale, AcceptRate
 from utils import get_client
 
 class ALogger(object):
@@ -24,6 +25,7 @@ class Turkomatic(object):
         self.client = client
         self.redundancy = redundancy
         self.verbosity = verbosity
+        quals = [Locale(), AcceptRate()]
 
         self.is_fair_task = HumanIO(
             self.client,
@@ -35,7 +37,8 @@ class Turkomatic(object):
             reward='0.03',
             description='Given a task description, vote whether this task can be done in 2 minutes.' + session,
             duration=600,
-            lifetime=6000
+            lifetime=6000,
+            qualifications=quals
         )
 
         self.subdivide_task = HumanIO(
@@ -52,7 +55,8 @@ class Turkomatic(object):
             reward='0.15',
             description='Given a task description, break down the task into smaller steps.' + session,
             duration=1800,
-            lifetime=6000
+            lifetime=6000,
+            qualifications=quals
         )
 
         self.verify_task = HumanIO(
@@ -65,7 +69,8 @@ class Turkomatic(object):
             reward='0.03',
             description='Given other turkers work, vote on the best.' + session,
             duration=600,
-            lifetime=6000
+            lifetime=6000,
+            qualifications=quals
         )
 
         self.solve_task = HumanIO(
@@ -78,7 +83,8 @@ class Turkomatic(object):
             reward='0.30',
             description='You are asked to solve a simple task that is part of a larger task, broken down by other turkers.' + session,
             duration=1800,
-            lifetime=6000
+            lifetime=6000,
+            qualifications=quals
         )
 
         self.merge_task = HumanIO(
@@ -91,7 +97,8 @@ class Turkomatic(object):
             reward='0.10',
             description='You are given the text answers of turkers solving parts of a large task. Combine their answers into one.' + session,
             duration=1800,
-            lifetime=600
+            lifetime=600,
+            qualifications=quals
         )
 
     def render_prompt(self, title, pre, post, task, context=None):
