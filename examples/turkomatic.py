@@ -55,7 +55,7 @@ class Turkomatic(object):
             reward='0.15',
             description='Given a task description, break down the task into smaller steps.' + session,
             duration=1800,
-            lifetime=6000,
+            lifetime=12000,
             qualifications=quals
         )
 
@@ -83,7 +83,7 @@ class Turkomatic(object):
             reward='0.30',
             description='You are asked to solve a simple task that is part of a larger task, broken down by other turkers.' + session,
             duration=1800,
-            lifetime=6000,
+            lifetime=12000,
             qualifications=quals
         )
 
@@ -97,7 +97,7 @@ class Turkomatic(object):
             reward='0.10',
             description='You are given the text answers of turkers solving parts of a large task. Combine their answers into one.' + session,
             duration=1800,
-            lifetime=600,
+            lifetime=12000,
             qualifications=quals
         )
 
