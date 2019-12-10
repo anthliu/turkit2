@@ -186,7 +186,7 @@ class Turkomatic(object):
             parameters={'prompt': prompt}
         ):
             answer_list = [answer[str(i)] for i in range(5)]
-            task_list = [a for a in answer_list if a is not None and len(a) > 3]
+            task_list = [a for a in answer_list if a is not None and len(a) > 0]
             divisions.append(task_list)
         return divisions
     
@@ -340,11 +340,24 @@ def test():
     ]
     test_solutions = ['awoeief', 'aowasdf', '123']
 
+    async def aprint(t):
+        s = await t
+        print(s)
+
+    asyncio.run(aprint(turkomatic._subdivide(task, context=test_context)))
     #asyncio.run(turkomatic._verify_solve(task, solutions=test_solutions, context=test_context))
     #asyncio.run(turkomatic._solve(task, context=test_context))
     #asyncio.run(turkomatic._merge(task, solutions=test_solutions, context=test_context))
 
-    asyncio.run(turkomatic.ask_async(overall, 2, quiet=False))
+    #asyncio.run(turkomatic.ask_async(overall, 2, quiet=False))
+
+def main():
+    client = get_client(production=False)
+    session = randint(0, 1000)
+    turkomatic = Turkomatic(client, session=str(session), redundancy=3, verbosity=100)
+    task = 'Write a 3 paragraph essay on "User Interfaces in Programming Languages".'
+
+    asyncio.run(turkomatic.ask_async(task, 2, quiet=False))
 
 if __name__ == '__main__':
-    test()
+    main()
