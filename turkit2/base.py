@@ -198,9 +198,13 @@ class Task(object):
             print("https://workersandbox.mturk.com/mturk/preview?groupId=" + response['HIT']['HITGroupId'])
 
         heartbeat = 30
+        total_sleep = 0
         cache = {}
         while len(cache) < assignments:
             await asyncio.sleep(heartbeat)
+            total_sleep += heartbeat
+            if total_sleep >= self.lifetime:
+                return
             new_assignment = False
             assignment_dicts = self._get_assignments(response['HIT']['HITId'])
             for assignment in assignment_dicts:
